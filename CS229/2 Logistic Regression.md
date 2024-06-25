@@ -11,7 +11,7 @@ $$g(z) = \frac{1}{1 + e^{-z}}$$
 **决策边界**：$\theta^T x = 0$。
 
 ## Probabilistic Interpretation
- logistic 回归基于以下假设：
+Logistic 回归基于以下假设：
 $$
 \begin{align}
 p(y^{(i)} = 1|x^{(i)};\theta) & = h_\theta(x^{(i)})\\
@@ -60,7 +60,7 @@ $$h_\theta(x) = g(\theta^Tx) = \begin{cases}
 0 & if \ \theta^Tx < 0
 \end{cases}
 $$
-其中，$g(z)$ 可以看作是 a "hard" version of logistic function
+其中，$g(z)$ 可以看作是 a "hard" version of logistic function。
 
 感知机以一个超平面作为决策边界 (decision boundary)，参数 $\theta$ 为这个超平面的法向量。感知机根据以下算法更新参数 $\theta$：
 $$\theta_j := \theta_j + \alpha \sum_{i = 1}^m (y^{(i)} - h_\theta(x^{(i)})) x^{(i)}$$

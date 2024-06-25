@@ -14,7 +14,7 @@
 	\end{align}$$
 
 # Multivariate Normal Distribution
-$$p(x; \mu, \Sigma) = \frac{1}{(2\pi)^{1/2} |\Sigma|^{1/2}} \exp(-\frac{1}{2}(x - \mu)^T \Sigma^{-1} (x-\mu))$$
+$$p(x; \mu, \Sigma) = \frac{1}{(2\pi)^{n/2} |\Sigma|^{1/2}} \exp(-\frac{1}{2}(x - \mu)^T \Sigma^{-1} (x-\mu))$$
 
 # Gaussian Discriminant Analysis
 GDA 用于输入 $x$ 为**连续实数**，输出 $y$ 为 \{0, 1\} 的**二分类**任务。
@@ -42,7 +42,12 @@ $$\mu_1 = \frac{\sum_{i = 1}^m 1\{y^{(i)} = 1\} x^{(i)}}{\sum_{i = 1}^m 1\{y^{(i
 $$\Sigma = \frac{1}{m} \sum_{i = 1}^m (x^{(i)} - \mu_{y^{(i)}}) (x^{(i)} - \mu_{y^{(i)}})^T$$
 时，梯度等于 0，联合概率的对数似然函数取最大值。
 
-GDA 的拟合非常易于计算，只需要统计训练数据集的均值和协方差即可。
+GDA 的拟合非常容易计算，只需要统计训练数据集的均值和协方差即可。
+
+GDA 可以扩展到多个类别，且高斯分布不共用协方差矩阵的情况：
+$$\phi_j = \frac{1}{m} \sum_{i = 1}^m 1\{y^{(i)} = j\}$$
+$$\mu_j = \frac{\sum_{i = 1}^m 1\{y^{(i)} = j\} x^{(i)}}{\sum_{i = 1}^m 1\{y^{(i)} = j\}}$$
+$$\Sigma_j = \frac{\sum_{i = 1}^m 1\{z^{(i)} = j\} (x^{(i)} - \mu_j)(x^{(i)} - \mu_j^T)}{\sum_{i = 1}^m 1\{z^{(i)} = j\}}$$
 
 # GDA and Logistic Regression
 将 
@@ -96,7 +101,7 @@ $$x_i | y = 0 \sim \mathrm{Bernoulli}(\phi_{i|y=0})$$
 - $\phi_y = p(y = 1)$
 - $\phi_{i|y = 1} = p(x_i = 1 | y = 1)$
 - $\phi_{i|y = 0} = p(x_i = 1 | y = 0)$
-输入的每个变量都各自服从一个伯努利分布，因此称为 Multivariate Bernoulli Event Model。
+输入 $x$ 的每个变量都各自服从一个伯努利分布，因此称为 Multivariate Bernoulli Event Model。
 
 最大化联合概率的对数似然函数：
 $$
@@ -109,11 +114,13 @@ $$
 
 可以证明，当参数满足：
 $$\phi_y = \frac{\sum_{i = 1}^m 1\{y^{(i)} = 1\}}{m}$$
-$$\phi_{i|y = 1} = \frac{\sum_{i = 1}^m 1\{x^{(i)}_j = 1 \land y^{(i)} = 1\}}{\sum_{i = 1}^m 1\{y^{(i)} = 1\}}$$
-$$\phi_{i|y = 0} = \frac{\sum_{i = 1}^m 1\{x^{(i)}_j = 1 \land y^{(i)} = 0\}}{\sum_{i = 1}^m 1\{y^{(i)} = 0\}}$$
+$$\phi_{j|y = 1} = \frac{\sum_{i = 1}^m 1\{x^{(i)}_j = 1 \land y^{(i)} = 1\}}{\sum_{i = 1}^m 1\{y^{(i)} = 1\}}$$
+$$\phi_{j|y = 0} = \frac{\sum_{i = 1}^m 1\{x^{(i)}_j = 1 \land y^{(i)} = 0\}}{\sum_{i = 1}^m 1\{y^{(i)} = 0\}}$$
 时，联合概率的对数似然函数取最大值。
 
-可以将每个变量各自服从一个二项分布扩展为每个变量各自服从一个分类分布。
+直观来看，每个词出现的概率就等于训练集中出现这个词的邮件的个数除以训练集中邮件的总数。
+
+可以将每个变量各自服从一个伯努利分布扩展为每个变量各自服从一个二项分布。
 对于输入为连续值，且不服从高斯分布的情况，可以将其**离散化**后使用朴素贝叶斯分类，从而达到比 GDA 更好的分类效果。
 
 **Laplace Smoothing**
@@ -135,7 +142,7 @@ $$\phi_{i|y = 1} = \frac{\sum_{i = 1}^m 1\{x^{(i)}_j = 1 \land y^{(i)} = 1\} + 1
 $$\phi_{i|y = 0} = \frac{\sum_{i = 1}^m 1\{x^{(i)}_j = 1 \land y^{(i)} = 0\} + 1}{\sum_{i = 1}^m 1\{y^{(i)} = 0\} + 2}$$
 
 ## Multinomial Event Model
-对于给定的词表（词表长度为 k）和一封邮件（邮件长度为 n），$x_i = j$ 表示邮件中的第 i 个词是词表中的词 j，$y \in \{0, 1\}$ 表示这封邮件是否是垃圾邮件：
+对于给定的词表（词表长度为 |V|）和一封邮件（邮件长度为 n），$x_i = j$ 表示邮件中的第 i 个词是词表中的词 j，$y \in \{0, 1\}$ 表示这封邮件是否是垃圾邮件：
 $$x = \begin{bmatrix}
 x_1\\
 x_2\\
@@ -147,17 +154,19 @@ x_n
 $$y \sim \mathrm{Bernoulli}(\phi_y)$$
 $$x_i | y = 1 \sim \mathrm{Categorical}(\phi_{1|y=1}, \phi_{2|y=1}, \cdots, \phi_{|V||y=1})$$
 $$x_i | y = 0 \sim \mathrm{Categorical}(\phi_{1|y=0}, \phi_{2|y=0}, \cdots, \phi_{|V||y=0})$$
-其参数为：
+即邮件中每个词的生成都相互独立，且来自同一个分类分布。其参数为：
 - $\phi_y = p(y = 1)$
 - $\phi_{k|y = 1} = p(x_i = k | y = 1), \ i \in \{1, 2, \cdots, n\}$
 - $\phi_{k|y = 0} = p(x_i = k | y = 0), \ i \in \{1, 2, \cdots, n\}$
-输入服从多项式分布，因此称为 Multinomial Event Model。
+输入 $x$ 服从多项式分布，因此称为 Multinomial Event Model。
 
 可以证明，当参数满足：
 $$\phi_y = \frac{\sum_{i = 1}^m 1\{y^{(i)} = 1\}}{m}$$
 $$\phi_{k|y = 1} = \frac{\sum_{i = 1}^m \sum_{j = 1}^n 1\{x^{(i)}_j = k \land y^{(i)} = 1\}}{\sum_{i = 1}^m 1\{y^{(i)} = 1\} n_i}$$
 $$\phi_{k|y = 0} = \frac{\sum_{i = 1}^m \sum_{j = 1}^n 1\{x^{(i)}_j = k \land y^{(i)} = 0\}}{\sum_{i = 1}^m 1\{y^{(i)} = 0\} n_i}$$
 时，联合概率的对数似然函数取最大值。
+
+直观来看，每个词生成的概率就等于训练集中这个词出现的次数除以训练集中词的总数。
 
 **Laplace Smoothing**
 对 Multinomial Event Model 的参数做拉普拉斯平滑：

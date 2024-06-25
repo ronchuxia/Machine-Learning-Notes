@@ -20,7 +20,7 @@ $$h_\theta(x) = \theta_0 + \theta_1x_1 + \theta_2x_2 + \cdots + \theta_nx_n$$
 $$h_\theta(x) = \sum^{n}_{i = 0} \theta_ix_i = \theta^Tx$$
 
 用于衡量参数 $\theta$ 效果的成本函数 (cost function)：
-$$J(\theta) = \frac{1}{2} \sum^{n}_{i = 0} (h_\theta(x^{(i)}) - y^{(i)})^2$$
+$$J(\theta) = \frac{1}{2} \sum^{m}_{i = 0} (h_\theta(x^{(i)}) - y^{(i)})^2$$
 
 ## Gradient Descent
 为了最小化成本函数 $J(\theta)$，可以使用梯度下降算法：
@@ -61,11 +61,12 @@ $$\nabla_Af(A) =
 2. $\nabla_{A^T} f(A) = (\nabla_A f(A))^T$
 3. $\nabla_A trABA^TC = CAB + C^TAB^T$
 	- 要求 $B$ 是方阵
-	- 注1：$(fg)' = f'g + fg'$
-	- 注2：由性质2和性质3，$\nabla_{A^T} trABA^TC = B^TA^TC^T + BA^TC$
-4. $\nabla_A |A| = |A|(A^{-1})^T$
-	- 注1：$A^{-1} = \frac{1}{|A|} (A')^T$
-	- 注2：$|A| = \sum_j A_{ij}A'_{ij}$
+	- 注 1：$(fg)' = f'g + fg'$
+	- 注 2：由性质 2 和性质 3，$\nabla_{A^T} trABA^TC = B^TA^TC^T + BA^TC$
+	- 注 3：$\nabla_A tr ABA^T = AB + AB^T$，$\nabla_{A^T} tr ABA^T = B^TA^T + BA^T$
+1. $\nabla_A |A| = |A|(A^{-1})^T$
+	- 注 1：$A^{-1} = \frac{1}{|A|} (A')^T$
+	- 注 2：$|A| = \sum_j A_{ij}A'_{ij}$
 
 将成本函数写成向量形式：
 $$J(\theta) = \frac{1}{2} (X \theta - Y)^T (X \theta - Y)$$
@@ -87,11 +88,15 @@ $$X^TX\theta - X^TY = 0$$
 其解为：
 $$\theta = (X^TX)^{-1}X^TY$$
 
+也可以将 $J(\theta)$ 写成：
+$$J(\theta) = \frac{1}{2} ||X\theta - Y||^2$$
+然后用矩阵求导法求最优解 $\theta$。
+
 # Locally Weighted Linear Regression
 对于一些数据，使用线性假设并不能很好的拟合，而使用高次多项式假设又容易过拟合，此时可以使用局部加权线性回归。
 
 局部加权线性回归的成本函数：
-$$J(\theta) = \sum_i w^{(i)}(h_\theta(x^{(i)}) - y^{(i)})^2$$
+$$J(\theta) = \frac{1}{2} \sum_{i = 1}^m w^{(i)}(h_\theta(x^{(i)}) - y^{(i)})^2$$
 其中，$w^{(i)}$ 是非负的权重，常用：
 $$w^{(i)} = \exp(- \frac{(x^{(i)} - x)^2}{2 \tau^2})$$
 如果 $x$ 是向量，$w^{(i)}$ 可以一般化为：

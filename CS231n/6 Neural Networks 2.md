@@ -51,7 +51,7 @@ reduced_images = np.dot(X_rot_reduced, U.transpose()[:100, :])
 在数据标准化后，我们期望网络的权重一半为正，一半为负。
 
 **不应使用全零初始化**
-由于 $\mathrm{d} w = \mathrm{d}f \cdot x^T$，如果输出 $f$ 全都一样，则 $\mathrm{d}f$ 全都一样，$\mathrm{d}w$ 的每一行（即每个神经元的权重的梯度）全都一样，所有神经元的更新也全都一样（神经元对称）。 
+所有神经元的权重都一样，所有神经元的输出都一样，这使得反向传播中所有神经元的更新也都一样（神经元对称）。 
 
 **小随机数初始化**
 Symmetry breaking，避免了神经元对称。但权重并不是越小越好。如果权重很小，输出对于输入的梯度就很小，在深层网络中容易导致**梯度消失**。
@@ -97,6 +97,8 @@ Xavier 初始化假设输入的期望为 0，这对于使用 ReLU 激活函数�
 ```python
 w = np.random.randn(n) / sqrt(2 / n)
 ```
+
+考虑到反向传播，初始化权重应除以 $\sqrt{\frac{2}{n_{in} + n_{out}}}$。
 
 **稀疏初始化**
 大部分权重初始化为 0，小部分权重随机初始化。
@@ -159,6 +161,9 @@ $p$ 一般取 0.5，也可以通过验证集调整。
 Dropout 是一种降低噪声的方法，其他类似的方法还有 DropConnect（将权重随机置零） 等。
 
 由于 bias 不与输入相乘，**一般不对 bias 做正则化**。
+
+**Batch Normalization**
+Machine learning methods tend to perform better with input data consisting of **uncorrelated features** with **zero mean** and **unit variance**. When training a neural network, we can **preprocess** the data before feeding it to the network to explicitly decorrelate its features. This will ensure that the first layer of the network sees data that follows a nice distribution. However, even if we preprocess the input data, **the activations at deeper layers of the network will likely no longer be decorrelated and will no longer have zero mean or unit variance**, since they are output from earlier layers in the network. Even worse, during the training process **the distribution of features at each layer of the network will shift as the weights of each layer are updated**.
 
 # Loss Functions
 ## Classification

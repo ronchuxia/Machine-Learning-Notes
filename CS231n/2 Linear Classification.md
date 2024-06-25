@@ -71,6 +71,9 @@ $\lambda$ 越大，$W$ 越小，$s$ 越小，softmax 得到的分布越均匀。
 
 与 Cross-Entropy Loss 相比，SVM Loss 更关注**局部**，对于已经正确分类的分类器，它不会再去更新。
 
+Softmax 函数的梯度：
+[Derivative of the Softmax Function and the Categorical Cross-Entropy Loss | by Thomas Kurbiel | Towards Data Science](https://towardsdatascience.com/derivative-of-the-softmax-function-and-the-categorical-cross-entropy-loss-ffceefc081d1)
+
 Cross-Entropy Loss 的梯度：
 $$\frac{\partial L_i}{\partial s_k} = p_k - 1\{y_i = k\}$$
 
