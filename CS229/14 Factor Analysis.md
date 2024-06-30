@@ -100,8 +100,7 @@ $$\Sigma = \begin{bmatrix}
 I & \Lambda^T\\
 \Lambda & \Lambda \Lambda^T + \Psi
 \end{bmatrix}$$
-
-据此，边缘分布：
+边缘分布：
 $$x \sim \mathcal{N}(\mu, \Lambda \Lambda^T + \Psi)$$
 
 # EM for Factor Analysis

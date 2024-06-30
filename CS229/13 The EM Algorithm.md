@@ -98,6 +98,48 @@ $$\begin{align}
 则：
 $$\Sigma_j = \frac{\sum_{i = 1}^m w_j^{(i)} (x^{(i)} - \mu_j) (x^{(i)} - \mu_j)^T}{\sum_{i = 1}^m w_j^{(i)}}$$
 
+# Variational Inference and Variational Auto-Encoder
+VAE 将 EM 算法推广到更复杂的神经网络模型。
+
+在 EM 算法中，我们构建了 $l(\theta)$ 的一个下界。这个下界称为**证据下界**（evidence lower bound, ELBO）：
+$$p(x; \theta) \geq \text{ELBO}(x; Q, \theta) = \sum_{z} Q(z) \log \frac{p(x, z; \theta)}{Q(z)}$$
+**上述不等式对于任意的 $Q(z)$ 都成立**。为了取等号，从而保证收敛性，EM 算法选择了后验分布 $p(z | x; \theta)$。
+
+然而，对于复杂的模型，如下列模型：
+$$z \sim \mathcal{N}(0, I)$$
+$$x | z \sim \mathcal{N}(g(z; \theta), \sigma^2 I)$$
+后验分布 $p(z | x; \theta)$ 难以计算。其中，$g(z; \theta)$ 是神经网络，称为 decoder。
+
+因此，VAE 使用神经网络模型对后验分布 $p(z | x; \theta)$ 做近似。
+
+VAE 基于以下假设：
+$$Q = \mathcal{N}(q(x; \phi), \text{diag}(v(x; \psi)^2))$$
+即**假设后验分布为高斯分布，且隐变量 $z$ 的各个维度独立**。其中，$q(x; \phi)$ 和 $v(x; \psi)$ 是神经网络，称为 encoder，用于拟合 $Q_i$ 的均值和方差，从而使 $Q_i$ 近似实际的后验分布。
+
+注：在很多情况下，让后验分布为高斯分布并不是一个好的假设，但是这个假设对于 VAE 的优化算法是至关重要的。
+
+ELBO 可以写成：
+$$\begin{align}
+\text{ELBO}(x; Q, \theta) & = E_{z \sim Q} \left[ \log \frac{p(x, z; \theta)}{Q(z)} \right]\\
+& = E_{z \sim Q} [\log p(x | z; \theta)] - D_{KL}(Q || p_z)
+\end{align}$$
+其中：
+- $- E_{z \sim Q}[\log p(x | z; \theta)]$ 为重构损失。重构损失可以通过对 $z$ 进行采样，然后用 decoder 重构 $x$，并取均方误差估计。重构损失用于保证模型能够重构输入数据，使生成的数据与原始数据尽可能相似。
+- $D_{KL}(Q||p_z)$ 为 KL 散度损失，$p_z$ 一般取 $\mathcal{N}(0, I)$。对于高斯分布，KL 散度损失可以直接根据均值与方差计算得到。KL 散度损失用于使生成的样本更加多样和真实，防止过拟合，增加稳定性。
+
+VAE 使用随机梯度上升算法优化 ELBO。对于 $\theta$，可以直接求梯度。对于 $\phi$ 和 $\psi$，由于重构损失涉及对 $z$ 进行采样，需要使用 re-parameterization trick。采样 $\xi \sim \mathcal{N}(0, I)$，则 $z = q(x; \phi) + v(x; \psi)^2 \xi$，这样就可以对 $\phi$ 和 $\psi$ 求梯度了。
+
+
+
+
+
+
+
+  
+
+
+
+
 
 
 
