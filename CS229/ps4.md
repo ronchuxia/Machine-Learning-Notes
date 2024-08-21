@@ -94,18 +94,22 @@ $$||V||_\infty = \max_{s \in S} |V(s)|$$
 
 证明：
 $$\begin{align}
-||B(V_1) - B(V_2)||_\infty & = \gamma \max_{s \in S} \left| \max_{a \in A} \sum_{s' \in S} P_{sa}(s') (V_1(s') - V_2(s')) \right|\\
-& = \gamma \max_{s \in S} |\max_{a \in A} E_{s' \sim P_{sa}}[V_1(s') - V_2(s')]|\\
-& \leq \gamma \max_{s \in S} |V_1(s') - V_2(s')|\\
-& = \gamma ||V_1 - V_2||_\infty
+||B(V_1) - B(V_2)||_\infty & = \gamma \left| \left| \max_{a \in A} \left[R(s, a) + \sum_{s' \in S} P_{sa}(s') V_1(s')\right] - \max_{a' \in A} \left[ R(s, a') + \sum_{s' \in S}P_{sa'}(s') V_2(s') \right] \right| \right|_\infty\\
+& \leq \gamma \max_{a \in A} \left|\left| \left[R(s, a) + \sum_{s' \in S} P_{sa}(s') V_1(s')\right] - \left[ R(s, a) + \sum_{s' \in S}P_{sa}(s') V_2(s') \right] \right|\right|_\infty\\
+& = \gamma \max_{a \in A} \left| \left| \sum_{s' \in S} P_{sa}(s')[V_1(s') - V_2(s')] \right| \right|_\infty\\
+& \leq \gamma \max_{a \in A} \left| \left| \sum_{s' \in S} P_{sa}(s') |V_1(s') - V_2(s')| \right| \right|_\infty\\
+& = \gamma ||V_1(s) - V_2(s)||_\infty\\
 \end{align}$$
 
-这表明 Bellman update operator 是一个 $\gamma$-contraction in the max-norm。因此，value iteration 几何收敛到最优价值函数。
+这表明 Bellman update operator 是一个 $\gamma$-contraction in the max-norm。
+
+注：可以证明：
+$$|\max_{a \in A} Q(s, a) - \max_{a' \in A}Q'(s, a')| \leq \max_{a \in A}|Q(s, a) - Q'(s, a)|$$
 
 2. 证明此时 Bellman update operator 只有一个不动点。
 
 假设 $V_1$ 和 $V_2$ 都是 Bellman update operator 的不动点，则：
-$$||B(V_1) - B(V_2)||_\infty = ||V_1 - V_2||_\infty \leq \gamma ||V_1 - V_2||$$
+$$||B(V_1) - B(V_2)||_\infty = ||V_1 - V_2||_\infty \leq \gamma ||V_1 - V_2||_\infty$$
 因为 $\gamma < 1$，所以要让上式成立，必有 $V_1 = V_2$。
 
-这表明此时 Bellman 最优性方程有唯一解。
+这表明 value iteration 几何收敛到唯一的最优价值函数。
