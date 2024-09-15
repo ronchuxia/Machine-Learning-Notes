@@ -6,3 +6,6 @@ Machine Learning Notes
 
 # CS231n
 [ronchuxia/cs231n (github.com)](https://github.com/ronchuxia/cs231n)
+
+# CS234
+[ronchuxia/cs234 (github.com)](https://github.com/ronchuxia/cs234)
