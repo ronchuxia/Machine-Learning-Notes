@@ -51,7 +51,7 @@ $$L = \frac{1}{N} \sum_i^N L_i + \lambda R(W)$$
 
 # Cross Entropy Loss
 Softmax classifier 的损失函数
-$$L_i = -\log(\frac{e^{s_{y_i}}}{\sum_j e^{s_j}})$$
+$$L_i = -\log \left( \frac{e^{s_{y_i}}}{\sum_j e^{s_j}} \right)$$
 $$L = \frac{1}{N} \sum_i^N L_i + \lambda R(W)$$
 信息论解释：
 - $p(x)$：真实分布
@@ -59,7 +59,7 @@ $$L = \frac{1}{N} \sum_i^N L_i + \lambda R(W)$$
 - $H(p, q)$：真实分布和预测分布的交叉熵
 $$H(p, q) = − \sum_x p(x)\log(q(x))$$
 $$p(x) = [0, \cdots, 1, \cdots, 0]$$
-$$q(x) = [\frac{e^{s_{y_0}}}{\sum_j e^{s_j}}, \cdots, \frac{e^{s_{y_i}}}{\sum_j e^{s_j}}, \cdots, \frac{e^{s_{y_N}}}{\sum_j e^{s_j}}]$$
+$$q(x) = \left[ \frac{e^{s_{y_0}}}{\sum_j e^{s_j}}, \cdots, \frac{e^{s_{y_i}}}{\sum_j e^{s_j}}, \cdots, \frac{e^{s_{y_N}}}{\sum_j e^{s_j}} \right]$$
 因此，$L_i = H(p, q)$。又由于 $H(p, q) = H(p) + D_{KL}(p||q)$，且 $\Delta$ 函数 $p$ 的熵 $H(p) = 0$，即 Cross-Entropy Loss 最小化 KL 散度。
 
 概率论解释：MLE。[[3 Generalized Linear Models]]
